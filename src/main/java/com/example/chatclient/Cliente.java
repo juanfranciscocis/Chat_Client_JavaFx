@@ -10,29 +10,20 @@ public class Cliente {
         this.conectado = conectado;
     }
 
-    public String getId(){
+
+    public String getId() {
         return id;
     }
 
-    public Boolean getConectado(){
-        return conectado;
-    }
-
-    public void setId(String id){
+    public void setId(String id) {
         this.id = id;
     }
 
-    public void setConectado(Boolean conectado){
-        this.conectado = conectado;
+    public Boolean getConectado() {
+        return conectado;
     }
 
-
-
-
-
-
-
-
-
-
+    public void setConectado(Boolean conectado) {
+        this.conectado = conectado;
+    }
 }

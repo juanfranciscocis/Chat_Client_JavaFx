@@ -15,6 +15,8 @@ public class ClienteServer {
     private DatagramSocket socket;
     private Cliente cliente;
 
+    private ObservableList<Cliente> listaClientes = FXCollections.observableArrayList();
+
     public ClienteServer() {
         try {
             socket = new DatagramSocket();
@@ -23,7 +25,13 @@ public class ClienteServer {
         }
     }
 
+    public ObservableList<Cliente> getListaClientes() {
+        return listaClientes;
+    }
 
+    public Cliente getCliente(){
+        return cliente;
+    }
 
     public void connectUsuario(String id){
         try{
@@ -37,7 +45,7 @@ public class ClienteServer {
             //verificando autenticacion
             if (verificandoAutenticacion()){
                 //obteniendo lista de usuarios
-                listaClientes();
+                listaClientesDesdeServer();
             }
 
 
@@ -81,7 +89,7 @@ public class ClienteServer {
         }
     }
 
-    ObservableList<Cliente> listaClientes (){
+    public void listaClientesDesdeServer(){
 
         while (true) {
 
@@ -108,8 +116,9 @@ public class ClienteServer {
                 }
                 System.out.println("Lista de clientes recibida");
                 System.out.println(clientes);
-                return clientes;
 
+                listaClientes = clientes;
+                break;
 
 
             } catch (IOException exception) {

@@ -19,8 +19,7 @@
       </TableView>
       <TextField fx:id="identificarseIDTextEdit" layoutX="235.0" layoutY="38.0" prefHeight="26.0" prefWidth="89.0" promptText="ID..." />
       <Label layoutX="235.0" layoutY="13.0" text="IDENTIFICARSE" />
-      <TextField fx:id="claveTextEdit" layoutX="332.0" layoutY="38.0" prefHeight="26.0" prefWidth="89.0" promptText="PASSWORD.." />
-      <Button layoutX="439.0" layoutY="38.0" mnemonicParsing="false" onAction="#Conectarse" text="CONECTARSE" />
+      <Button layoutX="340.0" layoutY="38.0" mnemonicParsing="false" onAction="#Conectarse" text="CONECTARSE" />
       <Label layoutX="235.0" layoutY="83.0" text="ENVIAR MENSAJE A:" />
       <TextField fx:id="idEnviarMensajeTextEdit" layoutX="235.0" layoutY="107.0" promptText="ID..." />
       <TableView fx:id="listaDeEnvioTableView" layoutX="235.0" layoutY="141.0" prefHeight="94.0" prefWidth="252.0">
