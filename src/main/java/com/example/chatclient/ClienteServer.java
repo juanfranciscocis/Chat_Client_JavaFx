@@ -1,12 +1,10 @@
 package com.example.chatclient;
 
-import javafx.beans.property.SimpleListProperty;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.scene.control.Alert;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -22,16 +20,10 @@ public class ClienteServer extends Task {
     private DatagramSocket socket;
     private Cliente cliente;
     private ObservableList<Cliente> listaClientes = FXCollections.observableArrayList();
-    private  ArrayList<Cliente> lista = new ArrayList<>();
-
+    private  ArrayList<Cliente> listaDinamica = new ArrayList<>();
     private ObservableList<Mensaje> listaMensajes = FXCollections.observableArrayList();
-    private SimpleListProperty<Mensaje> messagesProperty = new SimpleListProperty<>(listaMensajes);
 
-    private ClienteGUIController clienteGUIController = new ClienteGUIController();
 
-    public SimpleListProperty<Mensaje> messagesProperty() {
-        return messagesProperty;
-    }
 
     //CONSTRUCTOR
 
@@ -54,8 +46,8 @@ public class ClienteServer extends Task {
         return cliente;
     }
 
-    public ArrayList<Cliente> getLista() {
-        return lista;
+    public ArrayList<Cliente> getListaDinamica() {
+        return listaDinamica;
     }
 
     public ObservableList<Mensaje> getListaMensajes() {
@@ -169,7 +161,7 @@ public class ClienteServer extends Task {
     //RECIBIENDO MENSAJES DE OTROS CLIENTES UNA VEZ CONECTADO, USANDO THREADS
 
     @Override
-    protected Object call() throws Exception {
+    protected Object call() {
 
         System.out.println("Recibiendo mensajes de otros clientes");
 
@@ -212,8 +204,13 @@ public class ClienteServer extends Task {
                     System.out.println(mensaje[1] + " : " + mensaje[2]);
                     System.out.println(listaMensajes);
 
-                    clienteGUIController.refreshTable();
+                    //Get the instance of the controller from the main class
+                    ClienteGUIController controller = MainCliente.getController();
+                    System.out.println(controller);
 
+                    Platform.runLater(() -> {
+                        controller.cargarMensajesTableView();
+                    });
 
                 }
 
@@ -240,19 +237,19 @@ public class ClienteServer extends Task {
 
         for (Cliente cliente : listaClientes) {
             if (cliente.getId().equals(id)) {
-                lista.add(cliente);
+                listaDinamica.add(cliente);
             }
         }
     }
 
 
     public void eliminarListaDeEnvio() {
-        lista.clear();
+        listaDinamica.clear();
     }
 
     public void enviarMensaje(String text) {
         //TOMAMOS TODOS LOS USUARIOS DE LA LISTA DE ENVIO Y ENVIAMOS EL MENSAJE A CADA UNO
-        for (Cliente cliente : lista) {
+        for (Cliente cliente : listaDinamica) {
             try {
                 String mensaje = "MENSAJE-" +cliente.getId()+ "-" + text;
                 byte[] data = mensaje.getBytes();

@@ -1,6 +1,5 @@
 package com.example.chatclient;
 
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -11,17 +10,12 @@ import javafx.scene.input.MouseEvent;
 
 import java.net.SocketException;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 
 public class ClienteGUIController {
 
-    @FXML
-    private TextArea area;
-
 
     @FXML
-    public TableView<Mensaje> recibirMensajesTableView;
-
+    private TableView<Mensaje> mensajesTableView;
 
     @FXML
     private Button conectarseBoton;
@@ -29,11 +23,8 @@ public class ClienteGUIController {
     @FXML
     private ChoiceBox<String> idEnviarMensajeTextEdit;
 
-
     @FXML
     private TextField mensajeAEnviar;
-
-
 
     @FXML
     private TextField identificarseIDTextEdit;
@@ -44,14 +35,11 @@ public class ClienteGUIController {
     @FXML
     public  TableView<Cliente> listaDeUsuariosTableView;
 
-    @FXML
-    private TextArea mensajesRecibidos;
-
-    static ClienteServer clienteServer = new ClienteServer();
+    ClienteServer clienteServer = new ClienteServer();
 
     ObservableList<Cliente> usuariosList;
 
-     ObservableList<Mensaje> mensajesList;
+    ObservableList<Mensaje> mensajesList;
 
     boolean conectado = false;
 
@@ -59,32 +47,7 @@ public class ClienteGUIController {
 
     @FXML
     void initialize() throws SocketException {
-
-
-    }
-
-    void refreshTable(){
-        Platform.runLater(() -> {
-
-            cargarMensajesTableView();
-
-        });
-    }
-
-
-
-    void cargarUsuariosEnChoiceBox(){
-        usuariosList = clienteServer.getListaClientes();
-        idEnviarMensajeTextEdit.getItems().clear();
-        for (Cliente cliente: usuariosList) {
-
-            //AGREGO LOS USUARIOS A LA LISTA DE ENVIO SOLO SI ESTAN CONECTADOS
-            if (cliente.getConectado()){
-                idEnviarMensajeTextEdit.getItems().add(cliente.getId());
-            }
-
-
-        }
+        crearTablaMensajes();
     }
 
     @FXML
@@ -104,6 +67,16 @@ public class ClienteGUIController {
     void recargarListaChoiceBox(MouseEvent event) {
         cargarUsuariosEnChoiceBox();
     }
+    void cargarUsuariosEnChoiceBox(){
+        usuariosList = clienteServer.getListaClientes();
+        idEnviarMensajeTextEdit.getItems().clear();
+        for (Cliente cliente: usuariosList) {
+            //AGREGO LOS USUARIOS A LA LISTA DE ENVIO SOLO SI ESTAN CONECTADOS
+            if (cliente.getConectado()){
+                idEnviarMensajeTextEdit.getItems().add(cliente.getId());
+            }
+        }
+    }
 
     @FXML
     void agregarUsuario(ActionEvent event) {
@@ -114,7 +87,7 @@ public class ClienteGUIController {
             return;
         }
         clienteServer.agregarUsuarioAListaDeEnvio(id);
-        poblarListaDeEnvio(clienteServer.getLista());
+        poblarListaDeEnvio(clienteServer.getListaDinamica());
     }
 
      void poblarListaDeEnvio(ArrayList<Cliente> listaDeEnvio){
@@ -146,7 +119,7 @@ public class ClienteGUIController {
     void eliminarUsuarios(ActionEvent event) {
         //AL PRESIONAR EL BOTON ELIMINO LA LISTA DE ENVIO DEL CLIENTE SERVER
         clienteServer.eliminarListaDeEnvio();
-        poblarListaDeEnvio(clienteServer.getLista());
+        poblarListaDeEnvio(clienteServer.getListaDinamica());
 
     }
 
@@ -159,7 +132,7 @@ public class ClienteGUIController {
             new Alert(Alert.AlertType.ERROR, "No estas conectado").showAndWait();
             return;
         }
-        if (clienteServer.getLista().size() == 0){
+        if (clienteServer.getListaDinamica().size() == 0){
             new Alert(Alert.AlertType.ERROR, "No hay usuarios en la lista de envio").showAndWait();
             return;
         }
@@ -176,34 +149,42 @@ public class ClienteGUIController {
     }
 
     void cargarMensajesTableView(){
+
+        try {
+            crearTablaMensajes();
+            mensajesTableView.setItems(mensajesList);
+        } catch (IllegalStateException e) {
+               System.out.println();
+        }
+    }
+
+    void crearTablaMensajes(){
         System.out.println("Cargando tabla de mensajes");
-            try {
-                recibirMensajesTableView.getColumns().clear();
-                recibirMensajesTableView.getItems().clear();
+
+        try {
+            mensajesTableView.getColumns().clear();
+            mensajesTableView.getItems().clear();
+        } catch (Exception e) {
+            System.out.println("No se pudo limpiar la tabla");
+            new Alert(Alert.AlertType.ERROR, "No se pudo limpiar la tabla");
+        }
 
 
-            } catch (Exception e) {
-                System.out.println("No se pudo limpiar la tabla");
-            }
+        try {
 
-            try {
-
-                mensajesList = clienteServer.getListaMensajes();
-                System.out.println(mensajesList);
-
-                area.setText("holaa");
+            mensajesList = clienteServer.getListaMensajes();
+            System.out.println("MENSAJESLIST:" + mensajesList);
 
 
+            TableColumn<Mensaje, String> usuarioID = new TableColumn<>("idEnvio");
+            usuarioID.setCellValueFactory(new PropertyValueFactory<>("idEnvio"));
+            TableColumn<Mensaje, String> conectado = new TableColumn<>("mensaje");
+            conectado.setCellValueFactory(new PropertyValueFactory<>("mensaje"));
+            mensajesTableView.getColumns().addAll(usuarioID, conectado);
 
-
-
-            } catch (Exception e) {
-               e.printStackTrace();
-            }
-
-
-
-
+        } catch (Exception e) {
+            System.out.println("No se pudo poblar la tabla");
+        }
     }
 
 
@@ -238,7 +219,7 @@ public class ClienteGUIController {
             conectado.setCellValueFactory(new PropertyValueFactory<>("conectado"));
             listaDeUsuariosTableView.getColumns().addAll(usuarioID,conectado);
             listaDeUsuariosTableView.setItems(usuariosList);
-        } catch (Exception e) {
+        } catch (IllegalStateException e) {
             System.out.println("No se pudo poblar la tabla");
             new Alert(Alert.AlertType.ERROR, "No se pudo poblar la tabla");
         }
@@ -247,5 +228,6 @@ public class ClienteGUIController {
 
 
     }
+
 
 }
