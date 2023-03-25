@@ -1,5 +1,6 @@
 package com.example.chatclient;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -12,6 +13,11 @@ import java.net.SocketException;
 import java.util.ArrayList;
 
 public class ClienteGUIController {
+
+
+
+    @FXML
+    private Button desconectarseBoton;
 
 
     @FXML
@@ -35,7 +41,7 @@ public class ClienteGUIController {
     @FXML
     public  TableView<Cliente> listaDeUsuariosTableView;
 
-    ClienteServer clienteServer = new ClienteServer();
+    static ClienteServer clienteServer = new ClienteServer();
 
     ObservableList<Cliente> usuariosList;
 
@@ -48,6 +54,7 @@ public class ClienteGUIController {
     @FXML
     void initialize() throws SocketException {
         crearTablaMensajes();
+        desconectarseBoton.setDisable(true);
     }
 
     @FXML
@@ -60,6 +67,7 @@ public class ClienteGUIController {
             //DESACTIVO EL BOTON DE CONECTARSE
             identificarseIDTextEdit.setDisable(true);
             conectarseBoton.setDisable(true);
+            desconectarseBoton.setDisable(false);
         }
     }
 
@@ -143,9 +151,8 @@ public class ClienteGUIController {
         clienteServer.enviarMensaje(mensajeAEnviar.getText());
         mensajeAEnviar.setText("");
         System.out.println("Mensaje enviado");
-
-
-
+        clienteServer.setListaMensajes(new Mensaje("TÚ", "MENSAJE ENVIADO CORRECTAMENTE"));
+        cargarMensajesTableView();
     }
 
     void cargarMensajesTableView(){
@@ -225,6 +232,15 @@ public class ClienteGUIController {
         }
 
 
+
+
+    }
+
+    @FXML
+    void desconectarUsuario(ActionEvent event) {
+        clienteServer.desconectarUsuario(identificarseIDTextEdit.getText());
+        //CERRAR APP Y TODOS LOS PROCESOS DE LA MISMA
+        Platform.exit();
 
 
     }

@@ -21,7 +21,7 @@ public class ClienteServer extends Task {
     private Cliente cliente;
     private ObservableList<Cliente> listaClientes = FXCollections.observableArrayList();
     private  ArrayList<Cliente> listaDinamica = new ArrayList<>();
-    private ObservableList<Mensaje> listaMensajes = FXCollections.observableArrayList();
+    private static ObservableList<Mensaje> listaMensajes = FXCollections.observableArrayList();
 
 
 
@@ -53,6 +53,11 @@ public class ClienteServer extends Task {
     public ObservableList<Mensaje> getListaMensajes() {
         return listaMensajes;
     }
+
+    public void setListaMensajes(Mensaje nuevoMensaje) {
+        this.listaMensajes.add(nuevoMensaje);
+    }
+
     //METODOS
 
     //CONECTANDO EL USUARIO CON EL SERVER Y AUTENTICANDOLO
@@ -199,6 +204,7 @@ public class ClienteServer extends Task {
                     }
                     //agregar el nuevo mensaje
                     listM.add(mensajeNuevo);
+                    System.out.println(listM);
                     //actualizar la lista de mensajes
                     listaMensajes = listM;
                     System.out.println(mensaje[1] + " : " + mensaje[2]);
@@ -261,5 +267,18 @@ public class ClienteServer extends Task {
             }
         }
 
+    }
+
+    public void desconectarUsuario(String id){
+        //ENVIAR MENSAJE DE DESCONEXION AL SERVIDOR
+        try {
+            String mensaje = "DESCONECTAR-" + id;
+            byte[] data = mensaje.getBytes();
+            DatagramPacket sendPacket = new DatagramPacket(data,
+                    data.length, InetAddress.getLocalHost(), 5000);
+            socket.send(sendPacket);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

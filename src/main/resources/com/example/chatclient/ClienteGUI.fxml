@@ -34,5 +34,6 @@
       <ChoiceBox fx:id="idEnviarMensajeTextEdit" layoutX="235.0" layoutY="108.0" onMouseClicked="#recargarListaChoiceBox" prefWidth="150.0" />
       <TextField fx:id="mensajeAEnviar" layoutX="235.0" layoutY="249.0" prefHeight="26.0" prefWidth="339.0" promptText="ESCRIBA EL MENSAJE A ENVIAR" />
       <TableView fx:id="mensajesTableView" layoutX="240.0" layoutY="318.0" prefHeight="158.0" prefWidth="398.0" />
+      <Button fx:id="desconectarseBoton" layoutX="477.0" layoutY="38.0" mnemonicParsing="false" onAction="#desconectarUsuario" text="DESCONECTARSE" />
    </children>
 </AnchorPane>
