@@ -15,15 +15,11 @@ import java.util.Iterator;
 
 public class ClienteGUIController {
 
-
     @FXML
     private TextArea mensajesArea;
 
-
-
     @FXML
     private Button desconectarseBoton;
-
 
     @FXML
     private TableView<Mensaje> mensajesTableView;
@@ -162,10 +158,38 @@ public class ClienteGUIController {
     }
 
     void recargarMensajesEntrantes(Mensaje mensaje){
-
-        mensajesArea.appendText(mensaje.getIdEnvio()+"->"+mensaje.getMensaje() + "\n");
-        mensajesList = mensajesArea.getParagraphs();
+        mensajesArea.appendText(mensaje.getIdEnvio()+">"+mensaje.getMensaje() + "\n");
     }
+
+    void eliminarMensajes(String mensaje){
+
+        try {
+
+            Platform.runLater(() -> {
+                //FOR EACH LINE IN MENSAJES AREA
+                String[] lines = mensajesArea.getText().split("\n");
+                //IF THE LINE CONTAINS THE MESSAGE
+                for (int i = 0; i < lines.length; i++) {
+                    System.out.println(lines[i] + " LEIDO DESDE GUI");
+                    if (lines[i].contains(mensaje)) {
+                        //REMOVE THE LINE
+                        lines[i] = "";
+                        System.out.println("Mensaje eliminado");
+                    }
+                }
+                //REBUILD THE TEXT AREA
+                mensajesArea.setText("");
+                for (String line : lines) {
+                    mensajesArea.appendText(line + "\n");
+                }
+            });
+        } catch (Exception e) {
+            new Alert(Alert.AlertType.ERROR, "No se pudo eliminar el mensaje").showAndWait();
+        }
+
+    }
+
+
 
 
 

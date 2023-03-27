@@ -207,6 +207,16 @@ public class ClienteServer extends Task {
                 }
 
 
+                if(mensaje[0].equals("ELIMINADO")){
+                    System.out.println("MENSAJE ELIMINADO DESDE SERVER");
+                    System.out.println(mensaje[1]);
+                    ClienteGUIController controller = MainCliente.getController();
+                    Platform.runLater(() -> {
+                        controller.eliminarMensajes(mensaje[1]);
+                    });
+                }
+
+
 
             } catch (IOException exception) {
                 System.out.println("Fin de la ejecucion del thread");

@@ -23,7 +23,7 @@ public class MainCliente extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(MainCliente.class.getResource("ClienteGUI.fxml"));
         fxmlLoader.setController(clienteGUIController);
         Scene scene = new Scene(fxmlLoader.load());
-        stage.setTitle("Hello!");
+        stage.setTitle("CHAT CLIENTE");
         stage.setScene(scene);
         stage.show();
     }
