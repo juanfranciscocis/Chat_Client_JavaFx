@@ -28,6 +28,13 @@ public class MainCliente extends Application {
         stage.show();
     }
 
+    @Override
+    public void stop() {
+        // called when the app is about to exit
+        System.out.println("Closing app...");
+        clienteGUIController.desconectarYTerminarAPP();
+    }
+
 
 
 

@@ -11,8 +11,13 @@ import javafx.scene.input.MouseEvent;
 
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class ClienteGUIController {
+
+
+    @FXML
+    private TextArea mensajesArea;
 
 
 
@@ -45,7 +50,8 @@ public class ClienteGUIController {
 
     ObservableList<Cliente> usuariosList;
 
-    ObservableList<Mensaje> mensajesList;
+    ObservableList<CharSequence> mensajesList;
+
 
     boolean conectado = false;
 
@@ -53,7 +59,6 @@ public class ClienteGUIController {
 
     @FXML
     void initialize() throws SocketException {
-        crearTablaMensajes();
         desconectarseBoton.setDisable(true);
     }
 
@@ -95,7 +100,7 @@ public class ClienteGUIController {
             return;
         }
         clienteServer.agregarUsuarioAListaDeEnvio(id);
-        poblarListaDeEnvio(clienteServer.getListaDinamica());
+        poblarListaDeEnvio(clienteServer.getListaDinamicaClientes());
     }
 
      void poblarListaDeEnvio(ArrayList<Cliente> listaDeEnvio){
@@ -127,7 +132,7 @@ public class ClienteGUIController {
     void eliminarUsuarios(ActionEvent event) {
         //AL PRESIONAR EL BOTON ELIMINO LA LISTA DE ENVIO DEL CLIENTE SERVER
         clienteServer.eliminarListaDeEnvio();
-        poblarListaDeEnvio(clienteServer.getListaDinamica());
+        poblarListaDeEnvio(clienteServer.getListaDinamicaClientes());
 
     }
 
@@ -140,7 +145,7 @@ public class ClienteGUIController {
             new Alert(Alert.AlertType.ERROR, "No estas conectado").showAndWait();
             return;
         }
-        if (clienteServer.getListaDinamica().size() == 0){
+        if (clienteServer.getListaDinamicaClientes().size() == 0){
             new Alert(Alert.AlertType.ERROR, "No hay usuarios en la lista de envio").showAndWait();
             return;
         }
@@ -149,50 +154,20 @@ public class ClienteGUIController {
             return;
         }
         clienteServer.enviarMensaje(mensajeAEnviar.getText());
-        mensajeAEnviar.setText("");
         System.out.println("Mensaje enviado");
-        clienteServer.setListaMensajes(new Mensaje("TÚ", "MENSAJE ENVIADO CORRECTAMENTE"));
-        cargarMensajesTableView();
+        Mensaje m = new Mensaje("TU",mensajeAEnviar.getText());
+        recargarMensajesEntrantes(m);
+        mensajeAEnviar.setText("");
+        new Alert(Alert.AlertType.INFORMATION, "Mensaje enviado").showAndWait();
     }
 
-    void cargarMensajesTableView(){
+    void recargarMensajesEntrantes(Mensaje mensaje){
 
-        try {
-            crearTablaMensajes();
-            mensajesTableView.setItems(mensajesList);
-        } catch (IllegalStateException e) {
-               System.out.println();
-        }
+        mensajesArea.appendText(mensaje.getIdEnvio()+"->"+mensaje.getMensaje() + "\n");
+        mensajesList = mensajesArea.getParagraphs();
     }
 
-    void crearTablaMensajes(){
-        System.out.println("Cargando tabla de mensajes");
 
-        try {
-            mensajesTableView.getColumns().clear();
-            mensajesTableView.getItems().clear();
-        } catch (Exception e) {
-            System.out.println("No se pudo limpiar la tabla");
-            new Alert(Alert.AlertType.ERROR, "No se pudo limpiar la tabla");
-        }
-
-
-        try {
-
-            mensajesList = clienteServer.getListaMensajes();
-            System.out.println("MENSAJESLIST:" + mensajesList);
-
-
-            TableColumn<Mensaje, String> usuarioID = new TableColumn<>("idEnvio");
-            usuarioID.setCellValueFactory(new PropertyValueFactory<>("idEnvio"));
-            TableColumn<Mensaje, String> conectado = new TableColumn<>("mensaje");
-            conectado.setCellValueFactory(new PropertyValueFactory<>("mensaje"));
-            mensajesTableView.getColumns().addAll(usuarioID, conectado);
-
-        } catch (Exception e) {
-            System.out.println("No se pudo poblar la tabla");
-        }
-    }
 
 
 
@@ -238,12 +213,21 @@ public class ClienteGUIController {
 
     @FXML
     void desconectarUsuario(ActionEvent event) {
+        desconectarYTerminarAPP();
+    }
+
+    void desconectarYTerminarAPP(){
+
         clienteServer.desconectarUsuario(identificarseIDTextEdit.getText());
+
         //CERRAR APP Y TODOS LOS PROCESOS DE LA MISMA
         Platform.exit();
-
+        System.exit(0);
 
     }
+
+
+
 
 
 }

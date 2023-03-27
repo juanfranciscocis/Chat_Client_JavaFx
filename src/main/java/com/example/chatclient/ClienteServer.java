@@ -20,11 +20,8 @@ public class ClienteServer extends Task {
     private DatagramSocket socket;
     private Cliente cliente;
     private ObservableList<Cliente> listaClientes = FXCollections.observableArrayList();
-    private  ArrayList<Cliente> listaDinamica = new ArrayList<>();
-    private static ObservableList<Mensaje> listaMensajes = FXCollections.observableArrayList();
-
-
-
+    private  ArrayList<Cliente> listaDinamicaClientes = new ArrayList<>();
+    public ObservableList<Mensaje> listaMensajes = FXCollections.observableArrayList();
     //CONSTRUCTOR
 
     public ClienteServer() {
@@ -46,8 +43,8 @@ public class ClienteServer extends Task {
         return cliente;
     }
 
-    public ArrayList<Cliente> getListaDinamica() {
-        return listaDinamica;
+    public ArrayList<Cliente> getListaDinamicaClientes() {
+        return listaDinamicaClientes;
     }
 
     public ObservableList<Mensaje> getListaMensajes() {
@@ -197,35 +194,25 @@ public class ClienteServer extends Task {
 
                 if (mensaje[0].equals("MENSAJE")) {
                     Mensaje mensajeNuevo = new Mensaje(mensaje[1], mensaje[2]);
-                    ObservableList<Mensaje> listM = FXCollections.observableArrayList();
-                    //obtener toda la lista de mensajes
-                    for (int i = 0; i < listaMensajes.size(); i++) {
-                        listM.add(listaMensajes.get(i));
-                    }
-                    //agregar el nuevo mensaje
-                    listM.add(mensajeNuevo);
-                    System.out.println(listM);
-                    //actualizar la lista de mensajes
-                    listaMensajes = listM;
-                    System.out.println(mensaje[1] + " : " + mensaje[2]);
-                    System.out.println(listaMensajes);
+
 
                     //Get the instance of the controller from the main class
                     ClienteGUIController controller = MainCliente.getController();
                     System.out.println(controller);
 
                     Platform.runLater(() -> {
-                        controller.cargarMensajesTableView();
+                        controller.recargarMensajesEntrantes(mensajeNuevo);
                     });
 
                 }
+
+
 
             } catch (IOException exception) {
                 System.out.println("Fin de la ejecucion del thread");
             }
 
         }
-
 
 
     }
@@ -243,19 +230,19 @@ public class ClienteServer extends Task {
 
         for (Cliente cliente : listaClientes) {
             if (cliente.getId().equals(id)) {
-                listaDinamica.add(cliente);
+                listaDinamicaClientes.add(cliente);
             }
         }
     }
 
 
     public void eliminarListaDeEnvio() {
-        listaDinamica.clear();
+        listaDinamicaClientes.clear();
     }
 
     public void enviarMensaje(String text) {
         //TOMAMOS TODOS LOS USUARIOS DE LA LISTA DE ENVIO Y ENVIAMOS EL MENSAJE A CADA UNO
-        for (Cliente cliente : listaDinamica) {
+        for (Cliente cliente : listaDinamicaClientes) {
             try {
                 String mensaje = "MENSAJE-" +cliente.getId()+ "-" + text;
                 byte[] data = mensaje.getBytes();

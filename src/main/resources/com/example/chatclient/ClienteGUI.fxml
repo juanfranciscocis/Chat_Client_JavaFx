@@ -5,10 +5,12 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="497.0" prefWidth="665.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="492.0" prefWidth="665.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <TableView fx:id="listaDeUsuariosTableView" layoutX="14.0" layoutY="40.0" prefHeight="437.0" prefWidth="200.0">
         <columns>
@@ -17,9 +19,15 @@
         </columns>
       </TableView>
       <TextField fx:id="identificarseIDTextEdit" layoutX="235.0" layoutY="38.0" prefHeight="26.0" prefWidth="89.0" promptText="ID..." />
-      <Label layoutX="235.0" layoutY="13.0" text="IDENTIFICARSE" />
+      <Label layoutX="235.0" layoutY="13.0" text="IDENTIFICARSE">
+         <font>
+            <Font size="16.0" />
+         </font></Label>
       <Button fx:id="conectarseBoton" layoutX="340.0" layoutY="38.0" mnemonicParsing="false" onAction="#Conectarse" text="CONECTARSE" />
-      <Label layoutX="235.0" layoutY="83.0" text="ENVIAR MENSAJE A:" />
+      <Label layoutX="235.0" layoutY="83.0" text="ENVIAR MENSAJE A:">
+         <font>
+            <Font size="17.0" />
+         </font></Label>
       <TableView fx:id="listaDeEnvioTableView" layoutX="235.0" layoutY="141.0" prefHeight="94.0" prefWidth="421.0">
         <columns>
           <TableColumn prefWidth="75.0" text="C1" />
@@ -29,11 +37,18 @@
       <Button layoutX="402.0" layoutY="107.0" mnemonicParsing="false" onAction="#agregarUsuario" text="AGREGAR" />
       <Button layoutX="484.0" layoutY="107.0" mnemonicParsing="false" onAction="#eliminarUsuarios" text="ELIMINAR DESTINATARIOS" />
       <Button layoutX="590.0" layoutY="249.0" mnemonicParsing="false" onAction="#escribirMemsajeAUsuarios" text="ENVIAR" />
-      <Label layoutX="235.0" layoutY="293.0" text="MENSAJES RECIBIDOS" />
-      <Label layoutX="14.0" layoutY="13.0" text=" USUARIOS IDENTIFICADOS" />
+      <Label layoutX="235.0" layoutY="293.0" text="MENSAJES RECIBIDOS">
+         <font>
+            <Font size="16.0" />
+         </font></Label>
+      <Label layoutX="14.0" layoutY="13.0" text=" USUARIOS IDENTIFICADOS">
+         <font>
+            <Font size="15.0" />
+         </font></Label>
       <ChoiceBox fx:id="idEnviarMensajeTextEdit" layoutX="235.0" layoutY="108.0" onMouseClicked="#recargarListaChoiceBox" prefWidth="150.0" />
       <TextField fx:id="mensajeAEnviar" layoutX="235.0" layoutY="249.0" prefHeight="26.0" prefWidth="339.0" promptText="ESCRIBA EL MENSAJE A ENVIAR" />
-      <TableView fx:id="mensajesTableView" layoutX="240.0" layoutY="318.0" prefHeight="158.0" prefWidth="398.0" />
       <Button fx:id="desconectarseBoton" layoutX="477.0" layoutY="38.0" mnemonicParsing="false" onAction="#desconectarUsuario" text="DESCONECTARSE" />
+      <TextArea fx:id="mensajesArea" disable="true" layoutX="235.0" layoutY="332.0" prefHeight="145.0" prefWidth="421.0" />
+      <Label layoutX="235.0" layoutY="315.0" text="PERSONA QUE ENVIA    |     MENSAJE" />
    </children>
 </AnchorPane>

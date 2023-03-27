@@ -2,14 +2,14 @@ package com.example.chatclient;
 
 public class Mensaje {
 
-    public String idEnvio;
-    public String mensaje;
-
+    private String idEnvio;
+    private String mensaje;
 
     public Mensaje(String idEnvio, String mensaje) {
         this.idEnvio = idEnvio;
         this.mensaje = mensaje;
     }
+
 
     public String getIdEnvio() {
         return idEnvio;
